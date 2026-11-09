@@ -1,0 +1,193 @@
+% =========================================================================
+% MÓDULO 6: ANEXOS — MATERIAL METODOLÓGICO DE TT1 TRASLADADO (DIAPS. 26 A 31)
+% =========================================================================
+\appendix
+\annexslidetrue
+
+% --- ANEXO A1: METODOLOGÍA CRISP-DM GENERAL ---
+\begin{frame}{Anexo A1: Metodolog\'ia General CRISP-DM (Fase TT1)}{Arquitectura integral de seis fases para decodificaci\'on ECoG reproducible \cite{wirth2000crispdm,rodas_valencia_tpe_ecog}}
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{0.43\textwidth}
+      \begin{block}{Ciclo CRISP-DM Adaptado}
+        \scriptsize
+        \begin{enumerate}\setlength{\itemsep}{1.5pt}
+          \item \textbf{Problema:} Regresi\'on continua ($r$, $\operatorname{CCC}$, $\operatorname{MSE}$).
+          \item \textbf{Datos:} Auditor\'ia de electrodos y ZOH ($25\text{ Hz}$).
+          \item \textbf{Preparaci\'on (\texttt{P0}):} CWT Morlet, Spline y purga $P=256$.
+          \item \textbf{Modelado:} U-Net 1D (\texttt{A0} $\to$ \texttt{A5}) + Optuna \textbf{TPE}.
+          \item \textbf{Evaluaci\'on:} Reconstrucci\'on \textit{overlap-add} en 5 etapas.
+          \item \textbf{Trazabilidad:} Manifiesto SHA-256 y \texttt{V01--V14}.
+        \end{enumerate}
+      \end{block}
+    \end{column}
+
+    \begin{column}{0.54\textwidth}
+      \centering
+      \includegraphics[width=\linewidth,height=0.44\textheight,keepaspectratio]{imgs/DiagramaProyecto.png}
+      \figcap{A.1}{Flujo general del marco desarrollado desde la ingesta ECoG ($1000\text{ Hz}$) hasta la reconstrucci\'on continua de los 5 dedos ($100\text{ Hz}$). \textbf{Fuente:} Creaci\'on propia a partir de \cite{wirth2000crispdm} y el repositorio GitHub \cite{rodas_valencia_tpe_ecog}.}
+    \end{column}
+  \end{columns}
+
+  \takeaway{El marco metodol\'ogico desacopla el preprocesamiento fijo (\texttt{P0}), el redise\~no arquitect\'onico (\texttt{A0}$\to$\texttt{A5}) y la optimizaci\'on bayesiana (\textbf{TPE}), permitiendo auditar el aporte de cada fase.}
+\end{frame}
+
+% --- ANEXO A2: EXCLUSIÓN DE CANALES CORRUPTOS ---
+\begin{frame}{Anexo A2: Diagn\'ostico de Calidad y Exclusi\'on de Canales Corruptos}{Auditor\'ia f\'isica previa en TT1 para impedir la contaminaci\'on global de la rejilla cortical \cite{miller2008prediction,Schalk2011,rodas_valencia_tpe_ecog}}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \centering
+      \includegraphics[width=\linewidth,height=0.46\textheight,keepaspectratio]{imgs/s02_ranking.png}
+      \figcap{A.2}{Ranking de anomal\'ias de amplitud y varianza por electrodo en los tres sujetos (\texttt{S1}, \texttt{S2} y \texttt{S3}). \textbf{Fuente:} Obtenida del repositorio GitHub \cite{rodas_valencia_tpe_ecog}.}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \centering
+      \includegraphics[width=\linewidth,height=0.46\textheight,keepaspectratio]{imgs/s02_S2_c037.png}
+      \figcap{A.3}{Corrupci\'on instrumental severa en el canal \texttt{c037} del Sujeto 2 ($1817\times$ la desviaci\'on est\'andar basal). \textbf{Fuente:} Obtenida del repositorio GitHub \cite{rodas_valencia_tpe_ecog}.}
+    \end{column}
+  \end{columns}
+
+  \takeaway{\textbf{Exclusi\'on fija previa:} \texttt{S1} excluye \texttt{c54} ($62\to 61$), \texttt{S2} excluye \texttt{c20} y \texttt{c37} ($48\to 46$), y \texttt{S3} excluye \texttt{c49} ($64\to 63$). Esto evita que un promedio com\'un inyecte pulsos de $>1800\sigma$ en los canales sanos antes de aplicar Referencia Mediana Com\'un (CMR) \cite{rodas_valencia_tpe_ecog}.}
+\end{frame}
+
+% --- ANEXO A3: EXTRACCIÓN DE CARACTERÍSTICAS HIGH-GAMMA ---
+\begin{frame}{Anexo A3: Extracci\'on de Caracter\'isticas en la Banda High-Gamma}{Fundamento neurofisiol\'ogico de la banda $40\text{--}200\text{ Hz}$ abordado en TT1 \cite{kaplan2019decoding,Bundy2016,gruenwald2023highgamma}}
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{0.39\textwidth}
+      \begin{block}{Biomarcadores Corticales en ECoG}
+        \scriptsize
+        \begin{itemize}\setlength{\itemsep}{3.5pt}
+          \item \textbf{Bandas $\mu / \beta$ ($8\text{--}30\text{ Hz}$):} Exhiben desincronizaci\'on (ERD) difusa y no espec\'ifica al inicio del movimiento.
+          \item \textbf{Banda High-Gamma ($40\text{--}200\text{ Hz}$):} Refleja el disparo poblacional neuronal local en la capa V de la corteza motora primaria (M1) \cite{Bundy2016,gruenwald2023highgamma}.
+          \item \textbf{Selectividad somatot\'opica:} La potencia High-Gamma se correlaciona de forma directa y focalizada con la cinem\'atica individual de cada dedo \cite{kaplan2019decoding}.
+        \end{itemize}
+      \end{block}
+    \end{column}
+
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\linewidth,height=0.52\textheight,keepaspectratio]{imgs/s04_ersp.png}
+      \figcap{A.4}{Perturbaci\'on espectral ligada a eventos (ERSP) durante episodios de movimiento frente a reposo en la banda High-Gamma ($40\text{--}200\text{ Hz}$). \textbf{Fuente:} Obtenida del repositorio GitHub \cite{rodas_valencia_tpe_ecog}.}
+    \end{column}
+  \end{columns}
+
+  \takeaway{La concentraci\'on de energ\'ia motora en la banda $40\text{--}200\text{ Hz}$ sustenta el uso de un banco denso de \textbf{40 ond\'iculas complejas de Morlet} para extraer la envolvente instant\'anea de potencia en cada electrodo \cite{kaplan2019decoding,rodas_valencia_tpe_ecog}.}
+\end{frame}
+
+% --- ANEXO A4: PIPELINE P0 Y COMPRESIÓN TEMPORAL DE DATOS ---
+\begin{frame}{Anexo A4: Pipeline \texttt{P0} y Compresi\'on Temporal de Datos}{Acondicionamiento tiempo-frecuencia y reducci\'on de $1000\text{ Hz}$ a $100\text{ Hz}$ \cite{kaplan2019decoding,rodas_valencia_tpe_ecog}}
+  \centering
+  \begin{tikzpicture}[
+    node distance=2.2mm,
+    pbox/.style={rectangle, rounded corners=1.5mm, draw=ipnDark, fill=ipnSoft, thick, minimum height=9mm, inner sep=1.2mm, text width=1.82cm, align=center, font=\tiny\bfseries, text=textDark},
+    arr/.style={-{Stealth[length=1.8mm]}, thick, ipnDark}
+  ]
+    \node[pbox] (b1) {1. Exclusi\'on y Clip\\$\pm 25\,\hat{\sigma}_{\text{MAD}}$};
+    \node[pbox, right=of b1] (b2) {2. Referencia\\Mediana (CMR)};
+    \node[pbox, right=of b2] (b3) {3. FIR Pasabanda\\y Notch Triple};
+    \node[pbox, right=of b3] (b4) {4. CWT Morlet\\40 Bandas Log};
+    \node[pbox, right=of b4] (b5) {5. Compresi\'on\\Kaiser $100\text{ Hz}$};
+    \node[pbox, right=of b5, fill=rowHighlight] (b6) {6. Escalado Train\\Ventanas $W=256$};
+    \draw[arr] (b1) -- (b2);
+    \draw[arr] (b2) -- (b3);
+    \draw[arr] (b3) -- (b4);
+    \draw[arr] (b4) -- (b5);
+    \draw[arr] (b5) -- (b6);
+  \end{tikzpicture}
+
+  \vspace{2mm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Etapas 1 a 3: Limpieza y Filtrado Espectral}
+        \scriptsize
+        \begin{itemize}\setlength{\itemsep}{3pt}
+          \item \textbf{Exclusi\'on fija + Clip MAD:} Canales v\'alidos ($\text{S1}:61, \text{S2}:46, \text{S3}:63$) y acotamiento $\pm 25\,\hat{\sigma}_{\text{MAD}}$.
+          \item \textbf{Referencia Mediana Com\'un (CMR):} Sustracci\'on de la mediana espacial instant\'anea, inmune a valores at\'ipicos residuales.
+          \item \textbf{Filtros FIR de fase cero:} Pasabanda en $\mathbf{40\text{--}200\text{ Hz}}$ ($331$ taps) y Notch en $\mathbf{60, 120, 180\text{ Hz}}$ ($1651$ taps).
+        \end{itemize}
+      \end{block}
+    \end{column}
+
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Etapas 4 a 6: Escalograma y Compresi\'on de Datos}
+        \scriptsize
+        \begin{itemize}\setlength{\itemsep}{3pt}
+          \item \textbf{40 Wavelets de Morlet ($n_c=7$):} Potencia instant\'anea $P_{c,f_i}(t) = |(x_c * \psi_{f_i})(t)|^2$ en escala logar\'itmica.
+          \item \textbf{Compresi\'on temporal ($10\times$) a $100\text{ Hz}$:} Decimaci\'on con filtro FIR Kaiser antialias ($243$ taps) y recorte de $\mathbf{\pm 125\text{ muestras}}$ de borde ($1250\text{ ms}$).
+          \item \textbf{Escalado sin fuga:} \texttt{RobustScaler}$(10,90)$ en ECoG y \texttt{MinMaxScaler}$[0,1]$ en guante, ajustados \textbf{solo en train}.
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% --- ANEXO A5: RECONSTRUCCIÓN DEL GUANTE Y ADELANTO TEMPORAL ---
+\begin{frame}{Anexo A5: Reconstrucci\'on del Guante y Adelanto Temporal ($\tau = 20\text{ ms}$)}{Interpolaci\'on por Spline C\'ubico y compensaci\'on del desfase cortico-muscular \cite{miller2008prediction,rodas_valencia_tpe_ecog}}
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{0.39\textwidth}
+      \begin{block}{Acondicionamiento de Etiquetas $y_d(t)$}
+        \scriptsize
+        \begin{itemize}\setlength{\itemsep}{3.5pt}
+          \item \textbf{Problema del ZOH crudo:} El guante actualiza su lectura cada $40\text{ ms}$ ($25\text{ Hz}$), generando escalones artificiales con derivadas nulas y saltos discontinuos.
+          \item \textbf{Interpolaci\'on Spline C\'ubico (\textit{Not-a-Knot}):} Se extraen los nodos reales ($n=40m$) y se reconstruye una curva suave con continuidad $C^2$ a $\mathbf{100\text{ Hz}}$.
+          \item \textbf{Adelanto temporal ($\mathbf{\tau = 20\text{ ms}}$):} Desplazamiento de $+2\text{ muestras}$ a $100\text{ Hz}$ para compensar la latencia fisiol\'ogica entre la corteza motora y la flexi\'on mec\'anica del dedo.
+        \end{itemize}
+      \end{block}
+    \end{column}
+
+    \begin{column}{0.58\textwidth}
+      \centering
+      \includegraphics[width=\linewidth,height=0.48\textheight,keepaspectratio]{imgs/s08_glove_interpolation.png}
+      \figcap{A.5}{Comparaci\'on entre la se\~nal escalonada original del guante (ZOH a $25\text{ Hz}$) y la trayectoria continua reconstruida mediante Spline C\'ubico a $100\text{ Hz}$. \textbf{Fuente:} Obtenida del repositorio GitHub \cite{rodas_valencia_tpe_ecog}.}
+    \end{column}
+  \end{columns}
+
+  \takeaway{La interpolaci\'on por Spline C\'ubico elimina los artefactos de escal\'on del dataglove y permite entrenar la red neuronal con objetivos cinem\'aticos f\'isicamente diferenciables \cite{rodas_valencia_tpe_ecog}.}
+\end{frame}
+
+% --- ANEXO A6: DISEÑO DE LA ARQUITECTURA NEURONAL BASE A0 ---
+\begin{frame}{Anexo A6: Dise\~no de la Arquitectura Base \texttt{A0} y Compresi\'on Espectral}{Topolog\'ia U-Net 1D (\texttt{EncoderDecoder1D}) desarrollada en TT1 \cite{ronneberger2015unet,Lomtev2022,rodas_valencia_tpe_ecog}}
+  \centering
+  \begin{tikzpicture}[
+    node distance=3mm,
+    ubox/.style={rectangle, rounded corners=1.5mm, draw=ipnDark, fill=ipnSoft, thick, minimum height=9mm, inner sep=1.2mm, text width=2.12cm, align=center, font=\tiny\bfseries, text=textDark},
+    arr/.style={-{Stealth[length=2mm]}, thick, ipnDark}
+  ]
+    \node[ubox] (s1) {Entrada 2D\\$(C_{\text{v\'al}}\!\cdot\! 40) \times 256$};
+    \node[ubox, right=of s1] (s2) {Bloque \textit{Stem}\\Compresi\'on $\to f$};
+    \node[ubox, right=of s2] (s3) {Encoder 1D\\$L$ niveles ($d\in\{1,2,3\}$)};
+    \node[ubox, right=of s3] (s4) {Decoder + \textit{Skips}\\Fusi\'on multiescala};
+    \node[ubox, right=of s4, fill=rowHighlight] (s5) {Salida + OLA\\$5 \times 7750$ muestras};
+    \draw[arr] (s1) -- (s2);
+    \draw[arr] (s2) -- (s3);
+    \draw[arr] (s3) -- (s4);
+    \draw[arr] (s4) -- (s5);
+    \draw[dashed, thick, ipnMed, -{Stealth[length=1.8mm]}] (s3.north) to[bend left=22] node[above, font=\tiny\bfseries, text=ipnMed] {Conexiones de salto (\textit{skip})} (s4.north);
+  \end{tikzpicture}
+
+  \vspace{2mm}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Compresi\'on Espectral y Codificador}
+        \scriptsize
+        \begin{itemize}\setlength{\itemsep}{3pt}
+          \item \textbf{Compresi\'on espacial-espectral (\textit{Stem}):} Reduce la dimensi\'on de entrada ($2440, 1840\text{ o }2520$ canales tiempo-frecuencia) hacia $f \in \{64, 96\}$ mapas latentes.
+          \item \textbf{Codificador con dilataci\'on:} $L \in \{4, 5\}$ niveles con multiplicadores $[1,2,4,8,8]\cdot f$, activaci\'on \texttt{GELU} y dilataci\'on $d \in \{1,2,3\}$ para ampliar el campo receptivo temporal.
+        \end{itemize}
+      \end{block}
+    \end{column}
+
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Decodificaci\'on y Reconstrucci\'on Continua}
+        \scriptsize
+        \begin{itemize}\setlength{\itemsep}{3pt}
+          \item \textbf{Conexiones de salto (\textit{Skip Connections}):} Preservan la localizaci\'on temporal fina de las envolventes High-Gamma \cite{ronneberger2015unet}.
+          \item \textbf{Reconstrucci\'on \textit{Overlap-Add} (OLA):} Las predicciones sobre $119$ ventanas deslizantes ($W=256$, paso $64$) se promedian para reconstruir los $N=7750$ instantes completos de cada bloque.
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% 7. Anexos Adicionales de Defensa (Índice Extra y Anexos A7 a A20)
+\input{slides/08_anexos_adicionales}
+\annexslidefalse

@@ -1,0 +1,134 @@
+% =========================================================================
+% MÓDULO 4: CONCLUSIONES, CUMPLIMIENTO, LIMITACIONES Y FUTURO (DIAPS. 19 A 22)
+% =========================================================================
+
+% --- DIAPOSITIVA 19: CONCLUSIONES GENERALES Y HALLAZGOS H1-H5 ---
+\begin{frame}{Conclusiones Generales y Hallazgos Esenciales (\texttt{H1--H5})}{Desacoplamiento estad\'istico del aporte de arquitectura, \textit{checkpoint}, TPE y reentrenamiento \cite{rodas_valencia_tpe_ecog}}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Hallazgos sobre Arquitectura y HPO}
+        \scriptsize
+        \begin{itemize}\setlength{\itemsep}{1.5pt}
+          \item \textbf{\texttt{H1} (Redise\~no Arquitect\'onico $\mathbf{+0.1349}$):} El paso de \texttt{A0} ($0.5489$) a \texttt{A5} ($0.6837$) con \texttt{LayerNorm}, menor \texttt{Dropout}, \textit{skip} previo y \texttt{ConvTranspose1d} \textit{depthwise} fue el avance m\'as determinante ($14/15$ folds positivos).
+          \item \textbf{\texttt{H2} (Selecci\'on de \textit{Checkpoint} $\mathbf{+0.0493}$):} La parada temprana elev\'o \texttt{A5} sin TPE a $\mathbf{0.7330}$, separando el efecto temporal de la b\'usqueda de hiperpar\'ametros.
+          \item \textbf{\texttt{H3} (Beneficio Espec\'ifico de TPE):} En verificaci\'on ($0.7372$), la mejora media fue marginal ($+0.0041$), pero result\'o \textbf{sustancial en el Sujeto 2 ($\mathbf{+0.0319}$)} y confirm\'o a \texttt{A5} sobre \texttt{A5b} ($+0.0260$).
+        \end{itemize}
+      \end{block}
+    \end{column}
+
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{Hallazgos en Prueba Oficial y Fisiolog\'ia}
+        \scriptsize
+        \begin{itemize}\setlength{\itemsep}{1.5pt}
+          \item \textbf{\texttt{H4} (Reentrenamiento Completo $\mathbf{0.6669}$):} Integrar los 5 bloques (\texttt{B1--B5}) con la mediana de \'epocas verificadas super\'o al test inicial ($0.6333$) por $\mathbf{+0.0337}$ en las $9/9$ ejecuciones ($\operatorname{CCC}=0.5759$).
+          \item \textbf{\texttt{H5} (Variabilidad Inter-Sujeto e Inter-Dedo):} Se mantiene una brecha anat\'omica entre sujetos ($\text{S3}=0.7796$ vs.\ $\text{S2}=0.5490$) y entre dedos (Anular $0.7202$ e \'Indice $0.7161$ frente al acoplamiento biomec\'anico del Medio $0.5742$).
+        \end{itemize}
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \takeaway{\textbf{Conclusi\'on central:} Las decisiones estructurales sobre la topolog\'ia de la red y la regla de selecci\'on temporal ejercen un impacto mayor que el ajuste fino de hiperpar\'ametros, el cual act\'ua como un adaptador clave para sujetos con menor relaci\'on se\~nal-ruido basal.}
+\end{frame}
+
+% --- DIAPOSITIVA 20: CUMPLIMIENTO DE OBJETIVOS (DOS TABLAS INDEPENDIENTES) ---
+\begin{frame}{Evaluaci\'on del Cumplimiento de Objetivos}
+  \scriptsize
+  \centering
+  \renewcommand{\arraystretch}{1.28}
+  \setlength{\tabcolsep}{6pt}
+
+  % Tabla 1. Cumplimiento del objetivo general
+  {\footnotesize\bfseries\textcolor{ipnDark}{Tabla 1. Cumplimiento del objetivo general}\par}
+  \vspace{1mm}
+  \begin{tabularx}{\textwidth}{@{} >{\raggedright\arraybackslash}X c @{}}
+    \toprule
+    \rowcolor{ipnDark}
+    \textcolor{white}{\textbf{Objetivo general}} &
+    \textcolor{white}{\textbf{Estado de cumplimiento}} \\
+    \midrule
+    \rowcolor{rowLight}
+    Desarrollar un marco de configuraci\'on basado en redes neuronales profundas para la decodificaci\'on continua de movimientos de dedos a partir de se\~nales electrocorticogr\'aficas del Dataset 4 de la BCI Competition IV, optimizando su arquitectura e hiperpar\'ametros mediante optimizaci\'on bayesiana y comparando su desempe\~no frente al modelo base y al estado del arte. & \cmark \\
+    \bottomrule
+  \end{tabularx}
+
+  \vspace{3.5mm}
+
+  % Tabla 2. Cumplimiento de los cuatro objetivos particulares
+  {\footnotesize\bfseries\textcolor{ipnDark}{Tabla 2. Cumplimiento de los cuatro objetivos particulares}\par}
+  \vspace{1mm}
+  \begin{tabularx}{\textwidth}{@{} l >{\raggedright\arraybackslash}X c @{}}
+    \toprule
+    \rowcolor{ipnDark}
+    \textcolor{white}{\textbf{Objetivo}} &
+    \textcolor{white}{\textbf{Objetivo particular}} &
+    \textcolor{white}{\textbf{Estado de cumplimiento}} \\
+    \midrule
+    \textbf{Objetivo Particular 1} & Implementar una metodolog\'ia de filtrado, segmentaci\'on, normalizaci\'on y extracci\'on espectral libre de fuga de informaci\'on temporal. & \cmark \\
+    \rowcolor{rowLight}
+    \textbf{Objetivo Particular 2} & Integrar el flujo continuo de modelado dise\~nando una arquitectura base y su evoluci\'on estructural para predecir trayectorias de flexi\'on. & \cmark \\
+    \textbf{Objetivo Particular 3} & Dise\~nar e implementar con Optuna un esquema de optimizaci\'on bayesiana para buscar autom\'aticamente arquitecturas e hiperpar\'ametros por sujeto. & \cmark \\
+    \rowcolor{rowLight}
+    \textbf{Objetivo Particular 4} & Comparar el modelo optimizado frente al modelo base y al estado del arte bajo condiciones auditables. & \cmark \\
+    \bottomrule
+  \end{tabularx}
+  \fuente{Creaci\'on propia a partir de los compromisos t\'ecnicos de la investigaci\'on \cite{rodas_valencia_tpe_ecog}.}
+\end{frame}
+
+% --- DIAPOSITIVA 21: RETOS Y LIMITACIONES DEL TRABAJO ---
+\begin{frame}{Retos y Limitaciones del Trabajo y C\'omo se Afrontaron}{Transparencia metodol\'ogica y fronteras de inferencia cient\'ifica \cite{cawley2010overfitting,rodas_valencia_tpe_ecog}}
+  \vfill
+  \centering
+  {\footnotesize
+  \renewcommand{\arraystretch}{1.34}
+  \setlength{\tabcolsep}{6pt}
+  \begin{tabularx}{\textwidth}{@{} l >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X @{}}
+    \toprule
+    \rowcolor{ipnDark}
+    \textcolor{white}{\textbf{Reto o Limitaci\'on}} &
+    \textcolor{white}{\textbf{Implicaci\'on Metodol\'ogica}} &
+    \textcolor{white}{\textbf{Medida de Rigor Implementada}} \\
+    \midrule
+    \textbf{1.\ Muestra cl\'inica ($N=3$)} & Alta variabilidad inter-sujeto ($\text{S2}=0.5490$ a $\text{S3}=0.7796$) que impide inferencias poblacionales. & Reporte desglosado por paciente y dedo, aplicando b\'usqueda TPE personalizada por sujeto. \\
+    \rowcolor{rowLight}
+    \textbf{2.\ Optimismo en 32 trials TPE} & Seleccionar el m\'aximo de $32$ ensayos introduce sesgo de selecci\'on ($0.7509$) \cite{cawley2010overfitting}. & Ejecuci\'on de $60$ entrenamientos de verificaci\'on con semillas nuevas ($0.7372$) y separaci\'on del \textit{checkpoint} ($0.7330$). \\
+    \textbf{3.\ Car\'acter de \texttt{b1b5\_fixed}} & El reentrenamiento con los 5 bloques se dise\~n\'o tras observar el primer test ($0.6333$). & Reporte conjunto de ambos protocolos ($0.6333$ inicial y $0.6669$ reentrenado) con \'epocas fijadas por mediana de CV. \\
+    \rowcolor{rowLight}
+    \textbf{4.\ Acoplamiento del dedo Medio} & Menor correlaci\'on en prueba ($0.5742$) frente a Anular ($0.7202$) e \'Indice ($0.7161$). & Evaluaci\'on individualizada por dedo en las 15 celdas sujeto-dedo frente al estado del arte. \\
+    \bottomrule
+  \end{tabularx}
+  }
+  \fuente{Creaci\'on propia \cite{cawley2010overfitting,rodas_valencia_tpe_ecog}.}
+  \vfill
+\end{frame}
+
+% --- DIAPOSITIVA 22: TRABAJO FUTURO (EXCLUSIVAMENTE COMPRESIÓN EMBEBIDA) ---
+\begin{frame}{Trabajo a Futuro: Optimizaci\'on para Sistemas Embebidos}{Estrategias de compresi\'on de modelos para reducir recursos computacionales \cite{Xie2026,rodas_valencia_tpe_ecog}}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{1. Destilaci\'on de Conocimiento}
+        \scriptsize
+        \begin{itemize}\setlength{\itemsep}{4.5pt}
+          \item \textbf{Transferencia maestro-estudiante (\textit{Knowledge Distillation}):} Transferir el conocimiento de los modelos \texttt{A5} ($9.35\text{ M}$ a $28.03\text{ M}$ de par\'ametros) a arquitecturas m\'as compactas \cite{Xie2026}.
+          \item \textbf{Alineaci\'on de representaciones:} Entrenar la red ligera para reproducir tanto las trayectorias continuas de los cinco dedos como las activaciones latentes del decodificador.
+          \item \textbf{Beneficio operativo:} Disminuir el costo de inferencia manteniendo la precisi\'on alcanzada en la prueba oficial ($r = 0.6669$).
+        \end{itemize}
+      \end{block}
+    \end{column}
+
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{2. Poda Estructurada de Par\'ametros y Canales}
+        \scriptsize
+        \begin{itemize}\setlength{\itemsep}{4pt}
+          \item \textbf{Eliminaci\'on de filtros redundantes:} Reducir el tama\~no de las redes \texttt{A5} podando el $50\%$ de los canales en las etapas profundas $4f$ y $8f$ (que concentran $>72\%$ de los pesos).
+          \item \textbf{Criterio de relevancia por canal:} Seleccionar filtros mediante la norma $\ell_1$ de los kernels y el factor de escala $\gamma_o$ de \texttt{LayerNorm}:
+            \[
+              \mathcal{I}_{\text{LN}}(o) = |\gamma_o| \cdot \|\mathbf{W}_{o,:,:}\|_2
+            \]
+          \item \textbf{Despliegue en sistemas embebidos:} Reducci\'on proyectada del $\mathbf{75\%}$ \textbf{en FLOPs y memoria} ($<3\text{ M}$ de par\'ametros) para neuropr\'otesis de bajo consumo.
+        \end{itemize}
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+
+  \takeaway{Ambas l\'ineas permiten trasladar el desempe\~no de las redes \texttt{A5} hacia hardware embebido con restricciones estrictas de memoria, c\'omputo y disipaci\'on t\'ermica \cite{Xie2026,rodas_valencia_tpe_ecog}.}
+\end{frame}

@@ -1,0 +1,25 @@
+# LaTeX auxiliary and build files
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.log
+*.lot
+*.nav
+*.out
+*.snm
+*.synctex(busy)
+*.synctex.gz
+*.toc
+*.vrb
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# VS Code (preserve settings.json)
+.vscode/*
+!.vscode/settings.json

@@ -1,0 +1,168 @@
+%! TEX program = pdflatex
+\documentclass[aspectratio=169,10pt,xcolor=table]{beamer}
+
+% =========================================================================
+% PAQUETES Y CODIFICACIÓN
+% =========================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-nodecimaldot,es-noshorthands]{babel}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, fit}
+\usepackage{hyperref}
+
+% =========================================================================
+% PALETA DE COLORES INSTITUCIONAL IPN - ESCOM
+% =========================================================================
+\definecolor{ipnDark}{HTML}{6B1D2F}
+\definecolor{ipnDarker}{HTML}{4E1422}
+\definecolor{ipnMed}{HTML}{8A2432}
+\definecolor{ipnSoft}{HTML}{F6EEF0}
+\definecolor{ipnAccent}{HTML}{D9B8C0}
+\definecolor{bgLight}{HTML}{F8F9FA}
+\definecolor{textDark}{HTML}{212529}
+\definecolor{textMuted}{HTML}{5A626A}
+\definecolor{rowLight}{HTML}{F4ECEE}
+\definecolor{rowHighlight}{HTML}{EAD6DA}
+\definecolor{accentBlue}{HTML}{1B4F72}
+\definecolor{accentGreen}{HTML}{1E6B47}
+\definecolor{borderGray}{HTML}{D0D5DD}
+
+% =========================================================================
+% TEMA VISUAL Y MÁRGENES AMPLIOS (16:9)
+% =========================================================================
+\usetheme{default}
+\usecolortheme{default}
+\usefonttheme{professionalfonts}
+
+\setbeamersize{text margin left=10mm, text margin right=10mm}
+\setbeamertemplate{navigation symbols}{}
+
+\setbeamercolor{background canvas}{bg=white}
+\setbeamercolor{normal text}{fg=textDark,bg=white}
+\setbeamercolor{structure}{fg=ipnDark}
+\setbeamercolor{palette primary}{bg=ipnDark,fg=white}
+\setbeamercolor{palette secondary}{bg=ipnMed,fg=white}
+\setbeamercolor{palette tertiary}{bg=ipnDarker,fg=white}
+\setbeamercolor{frametitle}{bg=ipnDark,fg=white}
+\setbeamercolor{framesubtitle}{fg=ipnAccent}
+\setbeamercolor{block title}{bg=ipnDark,fg=white}
+\setbeamercolor{block body}{bg=bgLight,fg=textDark}
+\setbeamercolor{block title alerted}{bg=ipnMed,fg=white}
+\setbeamercolor{block body alerted}{bg=ipnSoft,fg=textDark}
+\setbeamercolor{block title example}{bg=accentBlue,fg=white}
+\setbeamercolor{block body example}{bg=bgLight,fg=textDark}
+\setbeamercolor{itemize item}{fg=ipnDark}
+\setbeamercolor{itemize subitem}{fg=ipnMed}
+\setbeamercolor{enumerate item}{fg=ipnDark}
+
+\setbeamerfont{frametitle}{size=\normalsize,series=\bfseries}
+\setbeamerfont{framesubtitle}{size=\scriptsize,series=\mdseries}
+\setbeamerfont{block title}{size=\footnotesize,series=\bfseries}
+\setbeamerfont{itemize/enumerate body}{size=\footnotesize}
+\setbeamerfont{itemize/enumerate subbody}{size=\scriptsize}
+
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{enumerate items}[default]
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+% =========================================================================
+% ENCABEZADO EN DOS LÍNEAS SIN COLISIONES
+% =========================================================================
+\setbeamertemplate{frametitle}{%
+  \nointerlineskip%
+  \begin{beamercolorbox}[wd=\paperwidth,leftskip=8mm,rightskip=8mm,sep=1.8mm]{frametitle}%
+    {\usebeamerfont{frametitle}\insertframetitle\par}%
+    \ifx\insertframesubtitle\@empty\else%
+      \vspace{0.4mm}%
+      {\usebeamerfont{framesubtitle}\insertframesubtitle\par}%
+    \fi%
+  \end{beamercolorbox}%
+  \vspace{-1.5mm}%
+}
+
+% =========================================================================
+% PIE DE PÁGINA INSTITUCIONAL CON CONTADOR CLARO
+% =========================================================================
+\newcommand{\maindecktotal}{22}
+\newif\ifbibslide
+\bibslidefalse
+\newif\ifannexslide
+\annexslidefalse
+
+\setbeamertemplate{footline}{%
+  \leavevmode%
+  \hbox{%
+    \begin{beamercolorbox}[wd=.25\paperwidth,ht=2.5ex,dp=1.1ex,leftskip=4mm]{palette tertiary}%
+      \tiny\bfseries TT 2026-B145 \,|\, IPN -- ESCOM
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.57\paperwidth,ht=2.5ex,dp=1.1ex,center]{palette primary}%
+      \tiny Rodas Bautista \& Valencia San Roman --- Decodificaci\'on ECoG con U-Net 1D y Optuna TPE
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.18\paperwidth,ht=2.5ex,dp=1.1ex,rightskip=4mm,right]{palette secondary}%
+      \tiny\bfseries%
+      \ifbibslide
+        Referencias (\insertframenumber)%
+      \else
+        \ifannexslide
+          Anexo (\insertframenumber)%
+        \else
+          Diapositiva \insertframenumber{} / \maindecktotal%
+        \fi
+      \fi
+    \end{beamercolorbox}%
+  }%
+  \vskip0pt%
+}
+
+% =========================================================================
+% COMANDOS REUTILIZABLES PARA CAJAS, MÉTRICAS Y FIGURAS
+% =========================================================================
+\newcommand{\cmark}{\textcolor{accentGreen}{\textbf{Cumplido}}}
+\newcommand{\hlnum}[1]{\textcolor{ipnDark}{\textbf{#1}}}
+
+\newcommand{\takeaway}[1]{%
+  \vspace{1mm}%
+  \begin{beamercolorbox}[rounded=true,sep=1.8mm]{block body alerted}%
+    \scriptsize\textcolor{ipnDark}{\textbf{Interpretaci\'on t\'ecnica:}} #1%
+  \end{beamercolorbox}%
+}
+
+\newcommand{\figcap}[2]{%
+  \par\vspace{1mm}%
+  {\centering\scriptsize\textcolor{ipnDark}{\textbf{Figura #1.}} \textcolor{textDark}{#2}\par}%
+}
+
+\newcommand{\fuente}[1]{%
+  \par\vspace{0.8mm}%
+  {\centering\tiny\textcolor{textMuted}{\textbf{Fuente:} #1}\par}%
+}
+
+\begin{document}
+
+% 1. Exposición Principal — Contexto TT2, Objetivos y Validación (Diapositivas 1 a 5)
+\input{slides/01_contexto_problema}
+
+% 2. Exposición Principal — Evolución Arquitectónica A1-A5 y Optuna TPE (Diapositivas 6 a 9)
+\input{slides/03_arquitectura_tpe}
+
+% 3. Exposición Principal — Resultados en 5 Etapas, Trayectorias y SOTA (Diapositivas 10 a 18)
+\input{slides/04_resultados_etapas}
+
+% 4. Conclusiones, Cumplimiento de Objetivos, Limitaciones y Trabajo Futuro (Diapositivas 19 a 22)
+\input{slides/05_conclusiones_futuro}
+
+% 5. Referencias Bibliográficas (Diapositivas 23 a 25)
+\input{slides/06_referencias}
+
+% 6. Sección de Anexos — Material Metodológico de TT1 Trasladado (Diapositivas 26 a 31)
+\input{slides/07_anexos}
+
+\end{document}

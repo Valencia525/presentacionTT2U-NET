@@ -1,0 +1,107 @@
+% =========================================================================
+% BLOQUE II: CONCLUSIONES, RETOS Y TRABAJO A FUTURO (DIAPOSITIVAS 15 A 17)
+% =========================================================================
+
+% --- DIAPOSITIVA 15: CONCLUSIONES GENERALES Y CUMPLIMIENTO DE OBJETIVOS (H1-H5) ---
+\begin{frame}{Conclusiones Generales y Cumplimiento de Objetivos (\texttt{H1--H5})}{S\'intesis cient\'ifica de las 5 etapas y verificaci\'on de metas del Trabajo Terminal}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.51\textwidth}
+      \scriptsize
+      \begin{block}{Cinco Hallazgos Esenciales (\texttt{H1--H5})}
+        \begin{itemize}\setlength{\itemsep}{2pt}
+          \item \textbf{\texttt{H1} (Arquitectura):} El redise\~no $\texttt{A0}\to\texttt{A5}$ (\texttt{LayerNorm}, menor \texttt{Dropout}, \textit{skip} previo y \texttt{ConvTranspose1d} \textit{depthwise}) aport\'o la mayor ganancia interna ($\mathbf{+0.1349}$, $14/15$ folds).
+          \item \textbf{\texttt{H2} (\textit{Checkpoint}):} La parada temprana explic\'o por separado $\mathbf{+0.0493}$ ($0.6837\to 0.7330$) antes de aplicar TPE.
+          \item \textbf{\texttt{H3} (TPE Heterog\'eneo):} Tras verificar con semillas nuevas ($0.7372$), el beneficio global fue marginal ($\mathbf{+0.0041}$), pero \textbf{apreciable en \texttt{S2} ($\mathbf{+0.0319}$)} y decant\'o \texttt{A5} sobre \texttt{A5b} ($+0.0260$).
+          \item \textbf{\texttt{H4} (Reentrenamiento Test):} Aprovechar \texttt{B1--B5} con mediana de \'epocas elev\'o Test de $0.6333$ a $\mathbf{0.6669}$ ($\mathbf{+0.0337}$, $9/9 > 0$).
+          \item \textbf{\texttt{H5} (Variabilidad):} Persiste dispersi\'on inter-sujeto ($\text{S3}=0.7796$ vs.\ $\text{S2}=0.5490$) e inter-digital (Anular $0.7202$ vs.\ Medio $0.5742$).
+        \end{itemize}
+      \end{block}
+    \end{column}
+
+    \begin{column}{0.47\textwidth}
+      \scriptsize
+      \begin{alertblock}{Matriz de Cumplimiento de Objetivos}
+        \centering
+        \renewcommand{\arraystretch}{1.18}
+        \setlength{\tabcolsep}{3pt}
+        {\tiny
+        \begin{tabular}{@{} l p{3.9cm} c @{}}
+          \toprule
+          \rowcolor{ipnDark}
+          \textcolor{white}{\textbf{Meta}} &
+          \textcolor{white}{\textbf{Evidencia Verificada en Tesis}} &
+          \textcolor{white}{\textbf{Estado}} \\
+          \midrule
+          \textbf{Obj.\ Gral.} & Marco U-Net 1D + TPE auditado ($723$ fits; $0.5489 \to 0.7372$ CV; $0.6669$ Test). & \cmark \\
+          \rowcolor{rowLight}
+          \textbf{OP1} & Pipeline \texttt{P0} ($40$ wavelets, Spline, $\tau=20\text{ ms}$, purga $P=256$, \texttt{V01--V14}). & \cmark \\
+          \textbf{OP2} & Integraci\'on \texttt{A0} ($0.5489$) y evoluci\'on a \texttt{A5b} ($0.6779$) y \texttt{A5} ($0.6837 / 0.7330$). & \cmark \\
+          \rowcolor{rowLight}
+          \textbf{OP3} & Optuna TPE ($96/96$ trials $= 480$ fits) $+$ $60$ fits de verificaci\'on multi-semilla. & \cmark \\
+          \textbf{OP4} & Supera a \textit{FingerFlex} ($+0.0269$) y a \textit{DTCNet} en \texttt{S3}, Anular y $8/15$ celdas. & \cmark \\
+          \bottomrule
+        \end{tabular}}
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% --- DIAPOSITIVA 16: RETOS, LIMITACIONES DECLARADAS Y CÓMO SE AFRONTARON ---
+\begin{frame}{Retos, Limitaciones Declaradas y C\'omo se Afrontaron}{Respuesta directa a los criterios de rigor metodol\'ogico y honestidad cient\'ifica en TT2}
+  \scriptsize
+  \centering
+  \renewcommand{\arraystretch}{1.28}
+  \setlength{\tabcolsep}{4.5pt}
+  \begin{tabular}{@{} p{3.4cm} p{4.6cm} p{5.4cm} @{}}
+    \toprule
+    \rowcolor{ipnDark}
+    \textcolor{white}{\textbf{Reto o Limitaci\'on Identificada}} &
+    \textcolor{white}{\textbf{Riesgo Metodol\'ogico Asociado}} &
+    \textcolor{white}{\textbf{C\'omo se Afront\'o en el Trabajo Terminal}} \\
+    \midrule
+    \textbf{1.\ Muestra cl\'inica reducida ($N=3$ sujetos)} & Imposibilidad de extrapolar intervalos de confianza poblacionales ante la heterogeneidad anat\'omica subdural. & Se reportan todas las m\'etricas desglosadas por sujeto (\texttt{S1--S3}) y por dedo sin hacer inferencias poblacionales infundadas, ejecutando b\'usqueda TPE individualizada. \\
+    \rowcolor{rowLight}
+    \textbf{2.\ Sesgo de selecci\'on en los 32 trials de TPE} & Sobreestimar la ganancia de TPE por optimismo del m\'aximo en validaci\'on o confundirla con \textit{Early Stopping}. & Se separ\'o el efecto del \textit{checkpoint} hist\'orico ($0.7330$, $+0.0493$) y se ejecutaron \textbf{$60$ entrenamientos de verificaci\'on con semillas nuevas} ($0.7509 \to 0.7372$) \cite{cawley2010overfitting}. \\
+    \textbf{3.\ Degradaci\'on de \texttt{ConvTranspose1d} aislada (\texttt{A3})} & Aplicar convoluci\'on transpuesta sola en \texttt{A3} redujo la correlaci\'on a $0.5173$ ($-0.0316$ vs.\ \texttt{A0}). & Se redise\~n\'o en modalidad \textbf{\textit{depthwise} por canal} (\texttt{groups}$=C$, $-99.8\%$ params) acoplada con \texttt{LayerNorm} y fusi\'on previa del \textit{skip} en \textbf{\texttt{A5}} ($0.6837$). \\
+    \rowcolor{rowLight}
+    \textbf{4.\ Reentrenamiento \texttt{B1--B5} post-test inicial} & El protocolo \texttt{b1b5\_fixed} se formul\'o tras observar el primer test \texttt{b1b4\_es\_b5} ($0.6333$) y cambia 4 factores simult\'aneos. & Se reportan con total transparencia \textbf{ambos protocolos} ($0.6333$ como evaluaci\'on inicial y $0.6669$ como resultado exploratorio final), fijando \'epocas por mediana de verificaci\'on. \\
+    \textbf{5.\ Fijaci\'on de \texttt{P0} frente a \texttt{P1} en Etapas 2--5} & La variante \texttt{P1} mejor\'o $+0.1157$ en \texttt{S2} sobre \texttt{A0}, pero cambiar dos ejes habr\'ia confundido efectos. & Se mantuvo fijo \texttt{P0} para aislar con rigor el aporte de la arquitectura \texttt{A5} y de TPE, dejando $\texttt{P1}+\texttt{A5}$ como extensi\'on factorial inmediata. \\
+    \bottomrule
+  \end{tabular}
+\end{frame}
+
+% --- DIAPOSITIVA 17: TRABAJO A FUTURO, ESCALABILIDAD Y ÁREAS DE OPORTUNIDAD ---
+\begin{frame}{Trabajo a Futuro, Escalabilidad y \'Areas de Oportunidad}{S\'intesis del Cap\'itulo 6: compresi\'on para hardware embebido y operaci\'on BCI en tiempo real \cite{Xie2026,wang2025dtcnet,rodas_valencia_tpe_ecog}}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{0.51\textwidth}
+      \scriptsize
+      \begin{alertblock}{1. Compresi\'on para Neuropr\'otesis Embebidas (Cap.\ 6)}
+        Optimizar la eficiencia computacional de los modelos \texttt{A5} ($9.35\text{ M}$ a $28.03\text{ M}$ params) para su despliegue en dispositivos embebidos de bajo consumo en tiempo real:
+        \begin{itemize}\setlength{\itemsep}{2.5pt}
+          \item \textbf{Destilaci\'on de Conocimiento (\textit{Knowledge Distillation}):} Transferir el aprendizaje adquirido por las redes \texttt{A5} de mayor capacidad hacia arquitecturas estudiante compactas \cite{Xie2026}.
+          \item \textbf{Purga / Poda Estructurada de Canales y Par\'ametros:} Extirpar filtros redundantes en los niveles profundos $4f$ y $8f$ (que concentran $>72\%$ de los pesos) mediante criterios de norma $\ell_1$ y ganancia de \texttt{LayerNorm} ($\mathcal{I}_{\text{LN}}(o) = |\gamma_o|\cdot\|\mathbf{W}_{o,:,:}\|_2$):
+            \begin{itemize}\tiny
+              \item Podar el $50\%$ de los canales en $4f$ y $8f$ \textbf{reduce un $\mathbf{75\%}$ los FLOPs y la memoria} hacia $<3\text{ M}$ params sin requerir librer\'ias de matrices dispersas, complementado con cuantizaci\'on \texttt{FP16}/\texttt{INT8}.
+            \end{itemize}
+        \end{itemize}
+      \end{alertblock}
+    \end{column}
+
+    \begin{column}{0.47\textwidth}
+      \scriptsize
+      \begin{block}{2. Escalabilidad Cl\'inica y Mejoras de Modelado}
+        \begin{enumerate}\setlength{\itemsep}{2.5pt}
+          \item \textbf{BCI en Lazo Cerrado ($<50\text{ ms}$) y $\texttt{P1}+\texttt{A5}$:}
+            Reemplazar el filtrado FIR sim\'etrico ($\pm 125$ muestras acausales) por filtros causales de fase m\'inima sobre ventanas pasadas $[t-W+1, t]$, y evaluar la combinaci\'on factorial $\texttt{P1}+\texttt{A5}$ en el Sujeto 2.
+          \item \textbf{Atenci\'on Anat\'omica Inter-Dedo y \textit{Stem} 1D/3D:}
+            Incorporar autoatenci\'on cruzada entre los 5 canales de salida y convoluciones espaciales para capturar la coactivaci\'on tendinosa del \textbf{dedo Medio} ($0.5742$) \cite{wang2025dtcnet}.
+          \item \textbf{Validaci\'on Cruzada Anidada y TPE Multi-Objetivo:}
+            Aproximar el frente de Pareto Precisi\'on--Concordancia--Complejidad:
+            \[
+              \mathbf{J}_{\text{multi}}(\bm{\lambda}, s) = \big(\bar{r}_{\text{CV}},\; \overline{\operatorname{CCC}}_{\text{CV}},\; -\log_{10} N_{\text{params}}\big)
+            \]
+        \end{enumerate}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
